@@ -1,0 +1,10 @@
+# requirements.txt
+fastapi
+uvicorn
+python-socketio
+sqlalchemy
+python-jose
+python-multipart
+pyotp
+python-dotenv
+psycopg2-binary

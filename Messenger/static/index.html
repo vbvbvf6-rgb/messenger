@@ -1,0 +1,221 @@
+<!-- # static/index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrOidgram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body data-theme="dark">
+  <div class="app-bg"></div>
+
+  <div id="authModal" class="auth-modal">
+    <div class="auth-card glass">
+      <h1>DrOidgram</h1>
+      <p>Войдите или зарегистрируйтесь по имени пользователя</p>
+      <div class="auth-row">
+        <input id="usernameInput" type="text" placeholder="Введите username..." maxlength="32" />
+      </div>
+      <div class="auth-row">
+        <input id="pinInput" type="password" placeholder="PIN (5 цифр)" maxlength="5" inputmode="numeric" />
+      </div>
+      <div class="auth-row">
+        <input id="otpInput" type="text" placeholder="2FA код (если включен)" maxlength="6" inputmode="numeric" />
+      </div>
+      <div class="auth-actions">
+        <button id="registerBtn" class="btn primary">Регистрация</button>
+        <button id="loginBtn" class="btn">Логин</button>
+      </div>
+      <div id="authError" class="auth-error"></div>
+    </div>
+  </div>
+
+  <div id="app" class="layout hidden">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <div class="logo"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <h2>DrOidgram</h2>
+          <small id="currentUserLabel">...</small>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+        <button id="settingsBtn" class="icon-btn" title="Настройки"><i class="fa-solid fa-gear"></i></button>
+        <button id="createRoomBtn" class="icon-btn" title="Создать комнату"><i class="fa-solid fa-plus"></i></button>
+      </div>
+
+      <section>
+        <h3>Комнаты</h3>
+        <div id="roomsList" class="list"></div>
+      </section>
+
+      <section>
+        <h3>Друзья онлайн</h3>
+        <div id="usersList" class="list"></div>
+      </section>
+
+      <section>
+        <h3>Заявки в друзья</h3>
+        <div id="friendRequestsList" class="list"></div>
+      </section>
+
+      <section>
+        <h3>Пользователи (добавить в друзья)</h3>
+        <div id="discoverUsersList" class="list"></div>
+      </section>
+    </aside>
+
+    <main class="chat-panel glass">
+      <header class="chat-header">
+        <div>
+          <h2 id="chatTitle">Выберите комнату</h2>
+          <p id="typingLabel" class="typing-label"></p>
+        </div>
+        <div class="chat-actions">
+          <input id="searchMessagesInput" type="text" placeholder="Поиск в чате..." />
+          <button id="searchMessagesBtn" class="icon-btn" title="Искать"><i class="fa-solid fa-magnifying-glass"></i></button>
+          <button id="voiceCallBtn" class="icon-btn" title="Аудиозвонок"><i class="fa-solid fa-phone"></i></button>
+          <button id="videoCallBtn" class="icon-btn" title="Видеозвонок"><i class="fa-solid fa-video"></i></button>
+          <button id="chatSettingsBtn" class="icon-btn" title="Настройки чата"><i class="fa-solid fa-sliders"></i></button>
+          <button id="addRoomMemberBtn" class="icon-btn" title="Добавить в приватную комнату"><i class="fa-solid fa-user-plus"></i></button>
+          <button id="participantsBtn" class="icon-btn"><i class="fa-solid fa-users"></i></button>
+        </div>
+      </header>
+
+      <section id="messages" class="messages"></section>
+
+      <footer class="chat-input-wrap">
+        <input id="fileInput" type="file" hidden />
+        <button id="attachBtn" class="icon-btn"><i class="fa-solid fa-paperclip"></i></button>
+        <input id="messageInput" type="text" placeholder="Напишите сообщение..." />
+        <button id="sendBtn" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      </footer>
+    </main>
+
+    <aside id="participantsPanel" class="participants glass">
+      <h3>Участники</h3>
+      <div id="participantsList" class="list"></div>
+    </aside>
+  </div>
+
+  <div id="chatSettingsModal" class="overlay hidden">
+    <div class="settings-card glass">
+      <div class="settings-header">
+        <h3>Настройки чата</h3>
+        <button id="closeChatSettingsBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="settings-content">
+        <label class="field-label">Локальное имя собеседника (только у тебя)</label>
+        <input id="chatAliasInput" type="text" maxlength="64" placeholder="Например: Мой дизайнер" />
+        <div class="settings-actions">
+          <button id="saveChatSettingsBtn" class="btn primary">Сохранить</button>
+          <button id="muteUserBtn" class="btn">Заглушить</button>
+          <button id="blockUserBtn" class="btn danger">Заблокировать</button>
+          <button id="clearChatBtn" class="btn danger">Очистить чат</button>
+        </div>
+        <div id="chatSettingsError" class="auth-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="callModal" class="overlay hidden">
+    <div class="settings-card glass">
+      <div class="settings-header">
+        <h3 id="callTitle">Звонок</h3>
+        <button id="endCallBtn" class="icon-btn"><i class="fa-solid fa-phone-slash"></i></button>
+      </div>
+      <div class="call-grid">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+      </div>
+      <div id="callStatus" class="auth-error"></div>
+      <div class="settings-actions">
+        <button id="acceptCallBtn" class="btn primary hidden">Принять</button>
+        <button id="rejectCallBtn" class="btn danger hidden">Отклонить</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="overlay hidden">
+    <div class="settings-card glass">
+      <div class="settings-header">
+        <h3>Настройки профиля</h3>
+        <button id="closeSettingsBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="settings-content">
+        <div class="profile-preview">
+          <img id="settingsAvatar" class="avatar-lg" src="/static/assets/default-avatar.svg" alt="">
+          <label for="avatarInput" class="avatar-upload-btn"><i class="fa-solid fa-camera"></i> Изменить фото</label>
+          <input id="avatarInput" type="file" accept="image/*" hidden />
+        </div>
+        <label class="field-label">Имя пользователя</label>
+        <input id="settingsUsernameInput" type="text" maxlength="32" />
+        <div class="settings-actions">
+          <button id="saveSettingsBtn" class="btn primary">Сохранить</button>
+          <button id="addAccountBtn" class="btn">Добавить аккаунт</button>
+          <button id="logoutBtn" class="btn danger">Выйти из аккаунта</button>
+        </div>
+        <label class="field-label mt">2FA (Google Authenticator / Authy)</label>
+        <div class="settings-actions">
+          <button id="setup2faBtn" class="btn">Сгенерировать 2FA</button>
+          <button id="enable2faBtn" class="btn primary">Включить 2FA</button>
+          <button id="disable2faBtn" class="btn danger">Выключить 2FA</button>
+        </div>
+        <input id="twofaCodeInput" type="text" maxlength="6" placeholder="Код 2FA (6 цифр)" />
+        <div id="twofaSecret" class="auth-error"></div>
+        <label class="field-label mt">Аккаунты на этом устройстве</label>
+        <div id="accountsList" class="list account-list"></div>
+        <div id="settingsError" class="auth-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteConfirmModal" class="overlay hidden">
+    <div class="settings-card glass">
+      <div class="settings-header">
+        <h3>Удалить сообщение?</h3>
+      </div>
+      <div class="settings-actions">
+        <button id="deleteForMeBtn" class="btn">Удалить у меня</button>
+        <button id="deleteForAllBtn" class="btn danger">Удалить у всех</button>
+        <button id="deleteCancelBtn" class="btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="createGroupModal" class="overlay hidden">
+    <div class="settings-card glass">
+      <div class="settings-header">
+        <h3>Новая приватная группа</h3>
+        <button id="closeGroupBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="settings-content">
+        <label class="field-label">Название группы</label>
+        <input id="groupNameInput" type="text" maxlength="64" placeholder="например, team-alpha" />
+        <label class="field-label mt">Добавить друзей</label>
+        <div id="groupMembersList" class="list"></div>
+        <div class="settings-actions">
+          <button id="createGroupConfirmBtn" class="btn primary"><i class="fa-solid fa-plus"></i> Создать группу</button>
+        </div>
+        <div id="groupError" class="auth-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="notifySound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRoQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YWAQAAAAAICAgICAgICAgICAf39/f39/f39/f39/f4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH9/f39/f39/f39/f39/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/f39/f39/f39/f39/f4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAf39/f39/f39/f39/f4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==" type="audio/wav">
+  </audio>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/static/p2p.js"></script>
+  <script src="/static/p2p-db.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+</html>
