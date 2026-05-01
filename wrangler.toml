@@ -1,0 +1,35 @@
+name = "vaibgram"
+type = "javascript"
+account_id = "YOUR_ACCOUNT_ID"
+workers_dev = true
+route = ""
+zone_id = ""
+compatibility_date = "2024-01-01"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+route = "example.com/*"
+zone_id = "YOUR_ZONE_ID"
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" }
+route = "staging.example.com/*"
+zone_id = "YOUR_ZONE_ID"
+
+# API configuration
+[build]
+command = "npm run build"
+cwd = "./"
+watch_paths = ["src/**/*.js"]
+
+# Enable caching
+[env.production.build]
+upload_rules = [
+  { type = "CompiledContentType", globs = ["**/*.wasm"], fallthrough = true }
+]
+
+# Environment variables for production
+[vars]
+API_ENDPOINT = "https://api.example.com"
+SOCKET_IO_SERVER = "https://api.example.com"
+DATABASE_URL = "postgresql://user:pass@db.example.com/vaibgram"

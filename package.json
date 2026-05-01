@@ -1,0 +1,38 @@
+{
+  "name": "vaibgram",
+  "version": "2.0.0",
+  "description": "Modern P2P Messenger with Deep Seek AI Protection, Currency System, and Gifts",
+  "main": "main.py",
+  "scripts": {
+    "start": "python main.py",
+    "dev": "uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "npm install",
+    "worker:dev": "cd src && wrangler dev",
+    "worker:deploy": "cd src && wrangler deploy",
+    "deploy:cloudflare": "wrangler pages deploy static/",
+    "test": "pytest backend/",
+    "lint": "flake8 backend/",
+    "format": "black backend/"
+  },
+  "keywords": [
+    "messenger",
+    "chat",
+    "calls",
+    "p2p",
+    "encryption",
+    "deepseek",
+    "currency",
+    "gifts"
+  ],
+  "author": "Vaibgram Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/wrangler": "^3.0.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.0",
+    "socket.io-client": "^4.7.0"
+  }
+}
